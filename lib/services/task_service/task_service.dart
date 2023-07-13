@@ -9,6 +9,10 @@ class TaskService extends ATaskService {
     Task(text: 'Task 2'),
     Task(text: 'Task 3'),
     Task(text: 'Task 4'),
+    Task(text: 'Task 5'),
+    Task(text: 'Task 6'),
+    Task(text: 'Task 7'),
+    Task(text: 'Task 8'),
     Task(text: 'Super long text on multiple lines\n\rline 1\n\rline 2\n\rline 3'),
   ];
 

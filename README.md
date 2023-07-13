@@ -1,16 +1,109 @@
 # todoey
 
-A new Flutter project.
+# Flutter
 
-## Getting Started
+* CheckboxListTile
+```
+CheckboxListTile(
+    title: Text(
+      widget.task.text,
+      style: TextStyle(
+        decoration: widget.task.completed //
+            ? TextDecoration.lineThrough
+            : TextDecoration.none,
+      ),
+    ),
+    onChanged: (value) {
+      setState(() {
+        widget.task.completed = value as bool;
+      });
+    },
+    value: widget.task.completed,
+  ),
+``` 
 
-This project is a starting point for a Flutter application.
+* BottomSheet
+```
+CheckboxListTile(
+    title: Text(
+      widget.task.text,
+      style: TextStyle(
+        decoration: widget.task.completed //
+            ? TextDecoration.lineThrough
+            : TextDecoration.none,
+      ),
+    ),
+    onChanged: (value) {
+      setState(() {
+        widget.task.completed = value as bool;
+      });
+    },
+    value: widget.task.completed,
+  ),
+``` 
 
-A few resources to get you started if this is your first Flutter project:
+* SingleChildScrollView
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* Callback with parameter and return type
+  ```
+  List<TaskWidget> getTasks() {
+    var tasks = <TaskWidget>[];
+    for (var task in taskService.fetchAll()) {
+      tasks.add(
+        TaskWidget(
+          task: task,
+          // set the callback
+          completeCallback: (Task task) {
+            taskService.complete(task);
+          },
+        ),
+      );
+    }
+    return tasks;
+  }
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+    class TaskWidget extends StatefulWidget {
+    Task task;
+    Function completeCallback;
+
+    TaskWidget({
+      super.key,
+      required this.task,
+      required this.completeCallback,
+    });
+
+    @override
+    State<TaskWidget> createState() => _TaskWidgetState();
+  }
+
+  class _TaskWidgetState extends State<TaskWidget> {
+    @override
+    Widget build(BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.only(left: 20, right: 30),
+        child: CheckboxListTile(
+          title: Text(
+            widget.task.text,
+            style: TextStyle(
+              decoration: widget.task.completed //
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
+            ),
+          ),
+          activeColor: Colors.lightBlueAccent,
+          onChanged: (value) {
+            setState(() {
+              widget.task.completed = value as bool;
+            });
+            if (widget.task.completed) {
+              // trigger the callback function
+              widget.completeCallback.call(widget.task);
+            }
+          },
+          value: widget.task.completed,
+        ),
+      );
+    }
+  }
+
+  ```

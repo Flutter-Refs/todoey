@@ -5,10 +5,12 @@ import 'package:todoey/models/tasks.dart';
 
 class TaskWidget extends StatefulWidget {
   Task task;
+  Function completeCallback;
 
   TaskWidget({
     super.key,
     required this.task,
+    required this.completeCallback,
   });
 
   @override
@@ -34,6 +36,9 @@ class _TaskWidgetState extends State<TaskWidget> {
           setState(() {
             widget.task.completed = value as bool;
           });
+          if (widget.task.completed) {
+            widget.completeCallback.call();
+          }
         },
         value: widget.task.completed,
       ),

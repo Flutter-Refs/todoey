@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:todoey/components/task_widget.dart';
+import 'package:todoey/models/tasks.dart';
+import 'package:todoey/screens/add_task_screen.dart';
 import 'package:todoey/services/task_service/a_task_service.dart';
 import 'package:todoey/services/task_service/task_service.dart';
 
@@ -14,14 +16,44 @@ class TasksScreen extends StatefulWidget {
 
 class _TasksScreenState extends State<TasksScreen> {
   ATaskService taskService = TaskService();
+  late List<TaskWidget> _tasksWidgets;
+
+  @override
+  void initState() {
+    super.initState();
+    _tasksWidgets = getTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
+      // add new task btn
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.lightBlueAccent,
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (context) => SingleChildScrollView(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: AddTaskScreen(addTaskCallback: (Task task) {
+                setState(() {
+                  _tasksWidgets.add(
+                    TaskWidget(
+                      task: task,
+                      completeCallback: (Task task) {
+                        taskService.complete(task);
+                      },
+                    ),
+                  );
+                });
+              }),
+            ),
+          );
+        },
         child: Icon(
           Icons.add,
           size: 30,
@@ -63,7 +95,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
                   // Tasks count
                   Text(
-                    '12 Tasks',
+                    '${taskService.fetchAll().length} Tasks',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -85,8 +117,18 @@ class _TasksScreenState extends State<TasksScreen> {
                     topRight: Radius.circular(20),
                   ),
                 ),
-                child: ListView(
-                  children: getTasks(),
+                // List view builder
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    var tasks = taskService.fetchAll();
+                    return TaskWidget(
+                      task: tasks[index],
+                      completeCallback: () {
+                        taskService.complete(tasks[index]);
+                      },
+                    );
+                  },
+                  itemCount: taskService.fetchAll().length,
                 )),
           ),
         ],
@@ -97,7 +139,14 @@ class _TasksScreenState extends State<TasksScreen> {
   List<TaskWidget> getTasks() {
     var tasks = <TaskWidget>[];
     for (var task in taskService.fetchAll()) {
-      tasks.add(TaskWidget(task: task));
+      tasks.add(
+        TaskWidget(
+          task: task,
+          completeCallback: (Task task) {
+            taskService.complete(task);
+          },
+        ),
+      );
     }
     return tasks;
   }
