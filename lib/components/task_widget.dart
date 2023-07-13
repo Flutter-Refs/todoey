@@ -29,6 +29,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                 : TextDecoration.none,
           ),
         ),
+        activeColor: Colors.lightBlueAccent,
         onChanged: (value) {
           setState(() {
             widget.task.completed = value as bool;
