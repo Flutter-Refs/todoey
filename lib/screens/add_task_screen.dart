@@ -1,12 +1,13 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todoey/models/tasks.dart';
+import 'package:todoey/services/task_service/task_service.dart';
+import 'package:todoey/utilities/constants.dart';
 
 class AddTaskScreen extends StatelessWidget {
-  final Function addTaskCallback;
-
-  AddTaskScreen({super.key, required this.addTaskCallback});
+  AddTaskScreen({super.key});
 
   Task newTask = Task(text: '');
 
@@ -15,13 +16,7 @@ class AddTaskScreen extends StatelessWidget {
     return Container(
       color: const Color(0xFF757575),
       child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+        decoration: Constants.kAddTaskContainerDecoration,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           child: Column(
@@ -31,11 +26,7 @@ class AddTaskScreen extends StatelessWidget {
               Text(
                 'Add Task',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.lightBlueAccent,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: Constants.kAddTaskButtonStyle,
               ),
 
               // Task text field
@@ -55,8 +46,8 @@ class AddTaskScreen extends StatelessWidget {
                   backgroundColor: MaterialStatePropertyAll<Color>(Colors.lightBlueAccent),
                 ),
                 onPressed: () {
+                  context.read<TaskService>().add(newTask);
                   Navigator.pop(context);
-                  addTaskCallback.call(newTask);
                 },
                 child: Text(
                   'Add',
